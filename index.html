@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="hi">
 <head>
@@ -5,157 +6,315 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Smart Contact Dialer</title>
 <style>
-:root{font-family:Arial, sans-serif;color:#172033;background:#f4f6fa}
-*{box-sizing:border-box}body{margin:0;padding:20px}
-.wrap{max-width:1100px;margin:auto}.top{background:#15243b;color:#fff;padding:22px;border-radius:16px}
-h1{margin:0 0 7px;font-size:25px}.muted{color:#667085}.top .muted{color:#d5deea}
-.card{background:#fff;border:1px solid #e3e8ef;border-radius:14px;padding:18px;margin-top:16px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.stat{background:#f7f9fc;border-radius:10px;padding:13px}.stat b{display:block;font-size:24px;margin-top:5px}
-label{font-weight:700;display:block;margin:12px 0 7px}
-textarea,input[type=file]{width:100%;padding:12px;border:1px solid #ccd5e1;border-radius:9px;background:#fff}
-textarea{min-height:125px;resize:vertical}
-button{border:0;border-radius:9px;padding:12px 17px;font-weight:700;cursor:pointer;background:#e8edf5;color:#172033}
-button.primary{background:#146c43;color:white}button:disabled{opacity:.45;cursor:not-allowed}
+:root{font-family:Arial,sans-serif;color:#172033;background:#f4f6fa}
+*{box-sizing:border-box}
+body{margin:0;padding:12px}
+.wrap{max-width:850px;margin:auto}
+.top{background:#15243b;color:white;padding:20px;border-radius:16px}
+h1{font-size:23px;margin:0 0 7px}
+.muted{color:#667085}
+.top .muted{color:#d5deea}
+.card{background:white;border:1px solid #e3e8ef;border-radius:14px;padding:16px;margin-top:14px}
+textarea{width:100%;min-height:155px;padding:13px;border:1px solid #ccd5e1;border-radius:10px;font-size:16px}
+input[type=file]{width:100%;padding:10px}
+label{font-weight:bold;display:block;margin:12px 0 7px}
+button{border:0;border-radius:10px;padding:13px 15px;font-weight:bold;font-size:15px;background:#e8edf5;color:#172033;cursor:pointer}
+button.primary{background:#146c43;color:white}
+button.call{background:#0878d1;color:white}
+button:disabled{opacity:.4}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.actions button{flex:1}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{background:#f7f9fc;border-radius:10px;padding:13px}
+.stat b{display:block;font-size:23px;margin-top:5px}
 .notice{padding:12px;border-radius:9px;background:#fff7e6;color:#805400;margin-top:12px;line-height:1.5}
-.good{background:#eaf7ef;color:#17643a}.bad{background:#fff0f0;color:#a12626}
-table{width:100%;border-collapse:collapse;margin-top:12px;min-width:620px}
-th,td{text-align:left;padding:11px;border-bottom:1px solid #e8edf3;font-size:14px}
-th{background:#f7f9fc}.tablebox{overflow:auto}
-.pill{padding:4px 8px;border-radius:20px;font-size:12px;font-weight:700;display:inline-block}
-.pending{background:#fff3d6;color:#805400}.dialed{background:#e4f5e9;color:#17643a}.duplicate{background:#ffe8e8;color:#a12626}
-.current{border:2px solid #146c43;background:#f5fff8}
-.phone{font-size:28px;font-weight:800;letter-spacing:1px;margin:7px 0}
+.good{background:#eaf7ef;color:#17643a}
+.bad{background:#fff0f0;color:#a12626}
+.phone{font-size:28px;font-weight:800;margin:9px 0;overflow-wrap:anywhere}
 .small{font-size:12px;color:#667085;line-height:1.5}
-@media(max-width:650px){body{padding:12px}.grid{grid-template-columns:repeat(2,1fr)}h1{font-size:21px}}
+.pill{padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold;display:inline-block;margin:2px}
+.pending{background:#fff3d6;color:#805400}
+.dialed{background:#e4f5e9;color:#17643a}
+.duplicate{background:#ffe8e8;color:#a12626}
+.current{border:2px solid #146c43;background:#f5fff8}
+.tablebox{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:520px;margin-top:10px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #e8edf3;font-size:13px}
+th{background:#f7f9fc}
+@media(max-width:500px){
+ body{padding:9px}
+ .top{padding:16px}
+ h1{font-size:21px}
+ .card{padding:13px}
+ .phone{font-size:25px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <h1>📞 Smart Contact Dialer</h1>
-    <div class="muted">अपनी संपर्क सूची डालें • डुप्लिकेट पहचानें • डायलिंग क्रम तैयार करें</div>
-  </header>
+<header class="top">
+<h1>📞 Smart Contact Dialer</h1>
+<div class="muted">पूरी लिस्ट पेस्ट करें • डायल करें • पहले कॉल हुए नंबर पहचानें</div>
+</header>
 
-  <section class="card">
-    <h2 style="margin-top:0">1. मोबाइल नंबरों की लिस्ट जोड़ें</h2>
-    <div class="small">फॉर्मेट: Serial Number, Name, Mobile Number — हर लाइन में एक संपर्क। CSV फाइल भी अपलोड कर सकते हैं।</div>
-    <label for="file">CSV फाइल अपलोड करें</label>
-    <input id="file" type="file" accept=".csv,.txt">
-    <label for="paste">या लिस्ट यहाँ पेस्ट करें</label>
-    <textarea id="paste" placeholder="S.No, Name, Mobile&#10;1, Rahul, 9876543210&#10;2, Amit, 9123456780&#10;3, Rahul Duplicate, 9876543210"></textarea>
-    <div class="actions">
-      <button class="primary" id="load">लिस्ट तैयार करें</button>
-      <button id="sample">डेमो लिस्ट</button>
-      <button id="clear">सब साफ करें</button>
-    </div>
-    <div id="message" class="notice">अभी कोई लिस्ट नहीं जोड़ी गई है।</div>
-  </section>
-
-  <section class="card">
-    <h2 style="margin-top:0">2. लिस्ट का विवरण</h2>
-    <div class="grid">
-      <div class="stat">कुल रिकॉर्ड<b id="total">0</b></div>
-      <div class="stat">डायल बाकी<b id="pending">0</b></div>
-      <div class="stat">डायल हो चुके<b id="dialed">0</b></div>
-      <div class="stat">डुप्लिकेट<b id="dupes">0</b></div>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 style="margin-top:0">3. डायलिंग कंट्रोल</h2>
-    <div id="current" class="stat">
-      <div class="muted">अगला संपर्क</div>
-      <b id="currentName" style="font-size:20px">—</b>
-      <div class="phone" id="currentPhone">—</div>
-      <div class="small" id="currentSerial">लिस्ट लोड होने पर संपर्क यहाँ दिखाई देगा।</div>
-    </div>
-    <div class="actions">
-      <button id="prev" disabled>← Previous</button>
-      <button class="primary" id="next" disabled>Next</button>
-      <button id="mark" disabled>इस नंबर को Dialed मार्क करें</button>
-    </div>
-    <div class="notice">
-      <b>कनेक्टर अभी जोड़ा नहीं गया है:</b> यह पहला वेबसाइट-पेज लिस्ट, डुप्लिकेट और डायलिंग क्रम तैयार करता है।
-      मोबाइल पर USB/ADB से असली डायलर खोलने के लिए अगले चरण में Windows ADB Connector जोड़ा जाएगा।
-      अभी Next केवल सूची में आगे बढ़ता है; यह कॉल नहीं लगाता।
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 style="margin-top:0">4. पूरी संपर्क सूची</h2>
-    <div class="tablebox">
-      <table>
-        <thead><tr><th>S.No.</th><th>Name</th><th>Mobile Number</th><th>Status</th></tr></thead>
-        <tbody id="rows"><tr><td colspan="4" class="muted">लिस्ट अभी खाली है।</td></tr></tbody>
-      </table>
-    </div>
-    <div class="small" style="margin-top:10px">नोट: यह शुरुआती संस्करण डेटा इसी ब्राउज़र में रखता है। साझा लिंक पर अलग-अलग लोगों की निजी लिस्ट और हिस्ट्री के लिए आगे लॉगिन/डेटाबेस व्यवस्था जोड़ी जाएगी।</div>
-  </section>
+<section class="card">
+<h3>1. पूरी नंबर लिस्ट पेस्ट करें</h3>
+<div class="small">Excel या WhatsApp से पूरी लिस्ट कॉपी करके नीचे पेस्ट करें। हर लाइन में नाम और मोबाइल नंबर रखें।</div>
+<textarea id="paste" placeholder="S.No    Name    Mobile
+1    Rahul    9876543210
+2    Amit    9123456780
+3    Suresh    9876543210"></textarea>
+<label>या CSV/TXT फाइल चुनें</label>
+<input id="file" type="file" accept=".csv,.txt">
+<div class="actions">
+<button class="primary" id="load">लिस्ट तैयार करें</button>
+<button id="clear">लिस्ट साफ करें</button>
 </div>
+<div id="message" class="notice">अपनी पूरी लिस्ट पेस्ट करें।</div>
+</section>
+
+<section class="card">
+<h3>2. लिस्ट का विवरण</h3>
+<div class="grid">
+<div class="stat">कुल रिकॉर्ड<b id="total">0</b></div>
+<div class="stat">डायल बाकी<b id="pending">0</b></div>
+<div class="stat">कॉल हो चुके<b id="dialed">0</b></div>
+<div class="stat">डुप्लिकेट<b id="dupes">0</b></div>
+</div>
+</section>
+
+<section class="card">
+<h3>3. डायलिंग कंट्रोल</h3>
+<div class="stat" id="current">
+<div class="muted">वर्तमान संपर्क</div>
+<b id="currentName" style="font-size:21px">—</b>
+<div class="phone" id="currentPhone">—</div>
+<div class="small" id="currentSerial">लिस्ट तैयार होने पर नंबर यहाँ आएगा।</div>
+<div id="currentStatus"></div>
+</div>
+<div class="actions">
+<button id="prev" disabled>← पिछला</button>
+<button class="primary" id="next" disabled>अगला →</button>
+</div>
+<div class="actions">
+<button class="call" id="dial" disabled>📞 डायल करें</button>
+<button class="primary" id="mark" disabled>✓ कॉल हो गई</button>
+</div>
+<div class="notice">
+डायल करें दबाने पर फोन का सामान्य Dialer खुलेगा। कॉल आपको खुद करनी है। कॉल के बाद वापस आकर "कॉल हो गई" दबाएँ।
+</div>
+</section>
+
+<section class="card">
+<h3>4. पूरी संपर्क सूची</h3>
+<div class="tablebox">
+<table>
+<thead><tr><th>क्रम</th><th>नाम</th><th>मोबाइल</th><th>स्थिति</th></tr></thead>
+<tbody id="rows"><tr><td colspan="4">लिस्ट खाली है।</td></tr></tbody>
+</table>
+</div>
+</section>
+</div>
+
 <script>
 const $=id=>document.getElementById(id);
-let contacts=[], index=0;
-const normalize=p=>String(p||'').replace(/[^\d+]/g,'').replace(/^00/,'+');
+const HISTORY_KEY='smartDialerCalledNumbersV1';
+
+let contacts=[];
+let index=0;
+let calledHistory={};
+
+try{
+ calledHistory=JSON.parse(localStorage.getItem(HISTORY_KEY)||'{}');
+}catch(e){calledHistory={};}
+
+function cleanPhone(p){
+ return String(p||'').replace(/[^\d+]/g,'').replace(/^00/,'+');
+}
+
+function phoneKey(p){
+ let d=String(p||'').replace(/\D/g,'');
+ if(d.length>10)d=d.slice(-10);
+ return d;
+}
+
+function escapeHtml(s){
+ return String(s??'').replace(/[&<>"']/g,c=>({
+ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+ }[c]));
+}
+
 function parseLines(text){
-  const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
-  if(!lines.length)return [];
-  return lines.map((line,i)=>{
-    let parts;
-    if(line.includes('\t')) parts=line.split('\t');
-    else if(line.includes(';')) parts=line.split(';');
-    else parts=line.split(',');
-    parts=parts.map(x=>x.trim().replace(/^"|"$/g,''));
-    if(i===0 && /name|mobile|phone|serial|s\.?no/i.test(line)) return null;
-    if(parts.length<2)return null;
-    let serial=parts.length>=3?parts[0]:(i+1);
-    let name=parts.length>=3?parts[1]:'';
-    let phone=parts.length>=3?parts.slice(2).join(''):parts[1];
-    if(parts.length===2){name=parts[0];phone=parts[1]}
-    if(!normalize(phone))return null;
-    return {serial,name,phone:String(phone).trim(),key:normalize(phone),status:'Pending',duplicate:false};
-  }).filter(Boolean);
+ const lines=text.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ if(!lines.length)return [];
+
+ return lines.map((line,i)=>{
+  let parts;
+  if(line.includes('\t'))parts=line.split('\t');
+  else if(line.includes(';'))parts=line.split(';');
+  else parts=line.split(',');
+
+  parts=parts.map(x=>x.trim().replace(/^"|"$/g,''));
+
+  if(i===0 && /name|mobile|phone|serial|s\.?no/i.test(line))return null;
+
+  if(parts.length<2)return null;
+
+  let serial=i+1,name='',phone='';
+
+  if(parts.length>=3){
+   serial=parts[0]||i+1;
+   name=parts[1]||'';
+   phone=parts.slice(2).join('');
+  }else{
+   name=parts[0];
+   phone=parts[1];
+  }
+
+  const key=phoneKey(phone);
+  if(key.length<7)return null;
+
+  return {
+   serial,name,phone:cleanPhone(phone),key,
+   duplicate:false
+  };
+ }).filter(Boolean);
 }
+
+function saveHistory(){
+ try{
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(calledHistory));
+ }catch(e){
+  alert('फोन में रिकॉर्ड सेव नहीं हो पाया। ब्राउज़र स्टोरेज जाँचें।');
+ }
+}
+
 function build(list){
-  const seen=new Set();
-  contacts=list.map(c=>{
-    const dup=seen.has(c.key);seen.add(c.key);
-    return {...c,duplicate:dup,status:dup?'Duplicate':'Pending'};
-  });
-  index=contacts.findIndex(c=>!c.duplicate);
-  if(index<0)index=0;
-  render();
-  $('message').className='notice good';
-  $('message').textContent=`${contacts.length} रिकॉर्ड जोड़े गए। डुप्लिकेट नंबर अलग दिखाए गए हैं।`;
+ const seen=new Set();
+
+ contacts=list.map(c=>{
+  const duplicate=seen.has(c.key);
+  seen.add(c.key);
+  return {...c,duplicate};
+ });
+
+ index=contacts.findIndex(c=>!c.duplicate && !calledHistory[c.key]);
+ if(index<0)index=contacts.findIndex(c=>!c.duplicate);
+ if(index<0)index=0;
+
+ render();
+ $('message').className='notice good';
+ $('message').textContent=contacts.length+' रिकॉर्ड तैयार हैं। पहले कॉल हुए नंबर भी पहचान लिए गए हैं।';
 }
+
 function render(){
-  const unique=contacts.filter(c=>!c.duplicate);
-  $('total').textContent=contacts.length;
-  $('pending').textContent=contacts.filter(c=>!c.duplicate&&c.status==='Pending').length;
-  $('dialed').textContent=contacts.filter(c=>c.status==='Dialed').length;
-  $('dupes').textContent=contacts.filter(c=>c.duplicate).length;
-  const c=contacts[index];
-  $('currentName').textContent=c?c.name||'नाम उपलब्ध नहीं':'—';
-  $('currentPhone').textContent=c?c.phone:'—';
-  $('currentSerial').textContent=c?`सीरियल नंबर: ${c.serial} • स्थिति: ${c.status}`:'लिस्ट लोड होने पर संपर्क यहाँ दिखाई देगा।';
-  $('current').className='stat'+(c&&!c.duplicate?' current':'');
-  $('prev').disabled=!contacts.length||index<=0;
-  $('next').disabled=!contacts.length||index>=contacts.length-1;
-  $('mark').disabled=!c||c.duplicate||c.status==='Dialed';
-  $('rows').innerHTML=contacts.length?contacts.map((x,i)=>{
-    const status=x.duplicate?'<span class="pill duplicate">Duplicate</span>':x.status==='Dialed'?'<span class="pill dialed">Dialed</span>':'<span class="pill pending">Pending</span>';
-    return `<tr ${i===index?'style="background:#f5fff8"':''}><td>${escapeHtml(x.serial)}</td><td>${escapeHtml(x.name)}</td><td>${escapeHtml(x.phone)}</td><td>${status}</td></tr>`;
-  }).join(''):'<tr><td colspan="4" class="muted">लिस्ट अभी खाली है।</td></tr>';
+ const unique=contacts.filter(c=>!c.duplicate);
+ $('total').textContent=contacts.length;
+ $('pending').textContent=unique.filter(c=>!calledHistory[c.key]).length;
+ $('dialed').textContent=unique.filter(c=>calledHistory[c.key]).length;
+ $('dupes').textContent=contacts.filter(c=>c.duplicate).length;
+
+ const c=contacts[index];
+
+ $('currentName').textContent=c?(c.name||'नाम उपलब्ध नहीं'):'—';
+ $('currentPhone').textContent=c?c.phone:'—';
+ $('currentSerial').textContent=c?'सीरियल नंबर: '+c.serial:'लिस्ट तैयार होने पर नंबर यहाँ आएगा।';
+
+ let status='';
+ if(c){
+  if(c.duplicate)status+='<span class="pill duplicate">इस लिस्ट में डुप्लिकेट</span>';
+  if(calledHistory[c.key])status+='<span class="pill dialed">पहले कॉल हो चुका है</span>';
+  if(!c.duplicate&&!calledHistory[c.key])status+='<span class="pill pending">कॉल बाकी है</span>';
+ }
+ $('currentStatus').innerHTML=status;
+
+ $('current').className='stat'+(c&&!c.duplicate?' current':'');
+ $('prev').disabled=!contacts.length||index<=0;
+ $('next').disabled=!contacts.length||index>=contacts.length-1;
+ $('dial').disabled=!c;
+ $('mark').disabled=!c||c.duplicate||!!calledHistory[c.key];
+
+ $('rows').innerHTML=contacts.length?contacts.map((x,i)=>{
+  let status='';
+  if(x.duplicate)status+='<span class="pill duplicate">डुप्लिकेट</span>';
+  if(calledHistory[x.key])status+='<span class="pill dialed">पहले कॉल हुआ</span>';
+  if(!x.duplicate&&!calledHistory[x.key])status+='<span class="pill pending">बाकी</span>';
+
+  return `<tr style="${i===index?'background:#f5fff8':''}">
+   <td>${escapeHtml(x.serial)}</td>
+   <td>${escapeHtml(x.name)}</td>
+   <td>${escapeHtml(x.phone)}</td>
+   <td>${status}</td>
+  </tr>`;
+ }).join(''):'<tr><td colspan="4">लिस्ट खाली है।</td></tr>';
 }
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-$('load').onclick=()=>{const list=parseLines($('paste').value);if(!list.length){$('message').className='notice bad';$('message').textContent='लिस्ट पढ़ी नहीं जा सकी। कृपया Serial, Name, Mobile वाले कॉलम डालें।';return}build(list)};
-$('sample').onclick=()=>{$('paste').value='S.No, Name, Mobile\\n1, Rahul, 9876543210\\n2, Amit, 9123456780\\n3, Suresh, 9876543210\\n4, Mohan, 9988776655';};
-$('clear').onclick=()=>{contacts=[];index=0;$('paste').value='';$('file').value='';$('message').className='notice';$('message').textContent='अभी कोई लिस्ट नहीं जोड़ी गई है।';render()};
-$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('paste').value=String(r.result||'');};r.readAsText(f)};
-$('prev').onclick=()=>{if(index>0){index--;render()}};
-$('next').onclick=()=>{if(index<contacts.length-1){index++;while(index<contacts.length&&contacts[index].duplicate)index++;if(index>=contacts.length)index=contacts.length-1;render()}};
-$('mark').onclick=()=>{if(contacts[index]&&!contacts[index].duplicate){contacts[index].status='Dialed';let next=index+1;while(next<contacts.length&&(contacts[next].duplicate||contacts[next].status==='Dialed'))next++;if(next<contacts.length)index=next;render()}};
+
+$('load').onclick=()=>{
+ const list=parseLines($('paste').value);
+ if(!list.length){
+  $('message').className='notice bad';
+  $('message').textContent='लिस्ट पढ़ी नहीं गई। नाम और मोबाइल नंबर वाली लिस्ट पेस्ट करें।';
+  return;
+ }
+ build(list);
+};
+
+$('file').onchange=e=>{
+ const f=e.target.files[0];
+ if(!f)return;
+ const reader=new FileReader();
+ reader.onload=()=>{$('paste').value=String(reader.result||'');};
+ reader.readAsText(f);
+};
+
+$('clear').onclick=()=>{
+ contacts=[];
+ index=0;
+ $('paste').value='';
+ $('file').value='';
+ $('message').textContent='लिस्ट साफ कर दी गई है। पहले कॉल हुए नंबरों का रिकॉर्ड सुरक्षित है।';
+ render();
+};
+
+$('prev').onclick=()=>{
+ if(index>0){index--;render();}
+};
+
+$('next').onclick=()=>{
+ if(index<contacts.length-1){
+  index++;
+  while(index<contacts.length-1&&contacts[index].duplicate)index++;
+  render();
+ }
+};
+
+$('dial').onclick=()=>{
+ const c=contacts[index];
+ if(!c)return;
+ const number=cleanPhone(c.phone);
+ if(number)window.location.href='tel:'+number;
+};
+
+$('mark').onclick=()=>{
+ const c=contacts[index];
+ if(!c||c.duplicate)return;
+
+ calledHistory[c.key]={
+  phone:c.phone,
+  date:new Date().toISOString()
+ };
+ saveHistory();
+
+ let next=index+1;
+ while(next<contacts.length&&
+       (contacts[next].duplicate||calledHistory[contacts[next].key])){
+  next++;
+ }
+ if(next<contacts.length)index=next;
+
+ render();
+};
+
 render();
 </script>
 </body>
